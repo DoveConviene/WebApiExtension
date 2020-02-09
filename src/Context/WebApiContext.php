@@ -102,7 +102,8 @@ class WebApiContext implements ApiClientAwareContext
         $url = $this->prepareUrl($url);
 
         if (version_compare(ClientInterface::VERSION, '6.0', '>=')) {
-            $this->request = new Request($method, $url, $this->headers);
+            $headers = $this->headers ? $this->headers : [];
+            $this->request = new Request($method, $url, $headers);
         } else {
             $this->request = $this->getClient()->createRequest($method, $url);
             if (!empty($this->headers)) {
@@ -132,7 +133,7 @@ class WebApiContext implements ApiClientAwareContext
         }
 
         $bodyOption = array(
-          'body' => json_encode($fields),
+            'body' => json_encode($fields),
         );
 
         if (version_compare(ClientInterface::VERSION, '6.0', '>=')) {
@@ -268,13 +269,13 @@ class WebApiContext implements ApiClientAwareContext
 
         if (null === $etalon) {
             throw new \RuntimeException(
-              "Can not convert etalon to json:\n" . $this->replacePlaceHolder($jsonString->getRaw())
+                "Can not convert etalon to json:\n" . $this->replacePlaceHolder($jsonString->getRaw())
             );
         }
 
         if (null === $actual) {
             throw new \RuntimeException(
-              "Can not convert actual to json:\n" . $this->replacePlaceHolder((string) $this->response->getBody())
+                "Can not convert actual to json:\n" . $this->replacePlaceHolder((string) $this->response->getBody())
             );
         }
 
