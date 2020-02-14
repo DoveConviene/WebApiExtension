@@ -102,8 +102,7 @@ class WebApiContext implements ApiClientAwareContext
         $url = $this->prepareUrl($url);
 
         if (version_compare(ClientInterface::VERSION, '6.0', '>=')) {
-            $headers = $this->headers ? $this->headers : [];
-            $this->request = new Request($method, $url, $headers);
+            $this->request = new Request($method, $url, $this->getHeaders());
         } else {
             $this->request = $this->getClient()->createRequest($method, $url);
             if (!empty($this->headers)) {
@@ -137,7 +136,7 @@ class WebApiContext implements ApiClientAwareContext
         );
 
         if (version_compare(ClientInterface::VERSION, '6.0', '>=')) {
-            $this->request = new Request($method, $url, $this->headers, $bodyOption['body']);
+            $this->request = new Request($method, $url, $this->getHeaders(), $bodyOption['body']);
         } else {
             $this->request = $this->getClient()->createRequest($method, $url, $bodyOption);
             if (!empty($this->headers)) {
@@ -163,7 +162,7 @@ class WebApiContext implements ApiClientAwareContext
         $string = $this->replacePlaceHolder(trim($string));
 
         if (version_compare(ClientInterface::VERSION, '6.0', '>=')) {
-            $this->request = new Request($method, $url, $this->headers, $string);
+            $this->request = new Request($method, $url, $this->getHeaders(), $string);
         } else {
             $this->request = $this->getClient()->createRequest(
                 $method,
@@ -354,6 +353,9 @@ class WebApiContext implements ApiClientAwareContext
      */
     protected function getHeaders()
     {
+        if (empty($this->headers)) {
+            return [];
+        }
         return $this->headers;
     }
 
